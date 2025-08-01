@@ -6,6 +6,7 @@ import {
   Container,
   ThemeProvider,
   createTheme,
+  CssBaseline,
 } from '@mui/material';
 import Question from './components/Question';
 import Result from './components/Result';
@@ -14,13 +15,31 @@ import { quizData } from './quizData';
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#ff0000',
+      main: '#00bcd4', // 水色
+    },
+    background: {
+      default: '#ffffff', // 背景色: 白
     },
   },
   typography: {
-    fontFamily: ['"M PLUS Rounded 1c"' ,'sans-serif'].join(','),
+    fontFamily: ['"M PLUS Rounded 1c"', 'sans-serif'].join(','),
   },
 });
+
+const AppTitle = () => (
+  <Typography
+    variant="h4"
+    component="div"
+    sx={{
+      flexGrow: 1,
+      color: 'white',
+      textShadow: '2px 2px 4px #000000',
+      textAlign: 'center',
+    }}
+  >
+    🌈 メタトーーク！
+  </Typography>
+);
 
 function App() {
   const [currentQuestion, setCurrentQuestion] = useState(0);
@@ -48,14 +67,13 @@ function App() {
 
   return (
     <ThemeProvider theme={theme}>
-      <AppBar position="static">
+      <CssBaseline />
+      <AppBar position="static" color="primary">
         <Toolbar>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            メタトーーク！ メタメタ大作戦大好き芸人度診断
-          </Typography>
+          <AppTitle />
         </Toolbar>
       </AppBar>
-      <Container sx={{ mt: 4 }}>
+      <Container sx={{ mt: 4, mb: 4 }}>
         {showResult ? (
           <Result score={score} onRestart={handleRestart} />
         ) : (
