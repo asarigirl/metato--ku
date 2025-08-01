@@ -1,1 +1,1 @@
-feat: initial commit
+style: update accent color

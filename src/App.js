@@ -15,7 +15,7 @@ import { quizData } from './quizData';
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#00bcd4', // 水色
+      main: '#65BBE9', // 水色
     },
     background: {
       default: '#ffffff', // 背景色: 白
