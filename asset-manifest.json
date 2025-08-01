@@ -1,13 +1,13 @@
 {
   "files": {
     "main.css": "/metato--ku/static/css/main.e6c13ad2.css",
-    "main.js": "/metato--ku/static/js/main.2ac27cf5.js",
+    "main.js": "/metato--ku/static/js/main.b79b07b6.js",
     "index.html": "/metato--ku/index.html",
     "main.e6c13ad2.css.map": "/metato--ku/static/css/main.e6c13ad2.css.map",
-    "main.2ac27cf5.js.map": "/metato--ku/static/js/main.2ac27cf5.js.map"
+    "main.b79b07b6.js.map": "/metato--ku/static/js/main.b79b07b6.js.map"
   },
   "entrypoints": [
     "static/css/main.e6c13ad2.css",
-    "static/js/main.2ac27cf5.js"
+    "static/js/main.b79b07b6.js"
   ]
 }
