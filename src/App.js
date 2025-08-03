@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   AppBar,
   Toolbar,
@@ -7,6 +7,8 @@ import {
   ThemeProvider,
   createTheme,
   CssBaseline,
+  Button,
+  Box,
 } from '@mui/material';
 import Question from './components/Question';
 import Result from './components/Result';
@@ -15,74 +17,134 @@ import { quizData } from './quizData';
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#65BBE9', // 水色
+      main: '#F0566E', // 赤
+    },
+    secondary: {
+      main: '#00AEEF', // 水色
     },
     background: {
       default: '#ffffff', // 背景色: 白
     },
   },
   typography: {
-    fontFamily: ['"M PLUS Rounded 1c"', 'sans-serif'].join(','),
+    fontFamily: ['Kiwi Maru', 'sans-serif'].join(','),
   },
 });
 
 const AppTitle = () => (
-  <Typography
-    variant="h4"
-    component="div"
-    sx={{
-      flexGrow: 1,
-      color: 'white',
-      textShadow: '2px 2px 4px #000000',
-      textAlign: 'center',
-    }}
-  >
-    🌈 メタトーーク！
-  </Typography>
+  <Box sx={{ textAlign: 'center', color: 'black' }}>
+    <Typography variant="h4" component="div">
+      メタメタ大作戦2025ファンゲーム
+    </Typography>
+    <Typography variant="h4" component="div">
+      <Box component="span" sx={{ color: 'blue' }}>クイズ</Box>
+      <Box component="span" sx={{ color: '#00AEEF' }}>プレゼン</Box>
+      <Box component="span" sx={{ color: 'magenta' }}>バラエティー</Box>
+    </Typography>
+  </Box>
 );
 
+// 配列をシャッフルする関数
+const shuffleArray = (array) => {
+  const shuffled = [...array];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+};
+
 function App() {
+  const [gameState, setGameState] = useState('start'); // 'start', 'quiz', 'result'
+  const [questions, setQuestions] = useState([]);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [score, setScore] = useState(0);
-  const [showResult, setShowResult] = useState(false);
+  const [lastUpdated, setLastUpdated] = useState('');
+
+  useEffect(() => {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = (now.getMonth() + 1).toString().padStart(2, '0');
+    const day = now.getDate().toString().padStart(2, '0');
+    const hours = now.getHours().toString().padStart(2, '0');
+    const minutes = now.getMinutes().toString().padStart(2, '0');
+    setLastUpdated(`${year}-${month}-${day} ${hours}:${minutes}`);
+  }, []);
+
+  const startGame = () => {
+    // クイズデータをシャッフルして20問選ぶ
+    const selectedQuestions = shuffleArray(quizData).slice(0, 20);
+    // 各問題の選択肢もシャッフル
+    const shuffledQuestions = selectedQuestions.map((q) => ({
+      ...q,
+      options: shuffleArray(q.options),
+    }));
+    setQuestions(shuffledQuestions);
+    setCurrentQuestion(0);
+    setScore(0);
+    setGameState('quiz');
+  };
 
   const handleAnswer = (answer) => {
-    if (answer === quizData[currentQuestion].answer) {
+    if (answer === questions[currentQuestion].answer) {
       setScore(score + 1);
     }
 
     const nextQuestion = currentQuestion + 1;
-    if (nextQuestion < quizData.length) {
+    if (nextQuestion < questions.length) {
       setCurrentQuestion(nextQuestion);
     } else {
-      setShowResult(true);
+      setGameState('result');
     }
   };
 
   const handleRestart = () => {
-    setCurrentQuestion(0);
-    setScore(0);
-    setShowResult(false);
+    setGameState('start');
   };
 
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <AppBar position="static" color="primary">
-        <Toolbar>
+      <AppBar position="static" color="transparent" elevation={0} sx={{ mt: 4 }}>
+        <Toolbar sx={{ justifyContent: 'center' }}>
           <AppTitle />
         </Toolbar>
       </AppBar>
-      <Container sx={{ mt: 4, mb: 4 }}>
-        {showResult ? (
-          <Result score={score} onRestart={handleRestart} />
-        ) : (
+      <Container sx={{ mt: 4, mb: 4, textAlign: 'center' }}>
+        <img src={process.env.PUBLIC_URL + '/q.png'} alt="Qさまロゴ" style={{ display: 'block', margin: '0 auto 20px', height: '250px' }} />
+        {gameState === 'start' && (
+          <Button variant="contained" color="primary" size="large" onClick={startGame}>
+            スタート
+          </Button>
+        )}
+        {gameState === 'quiz' && questions.length > 0 && (
           <Question
-            question={quizData[currentQuestion]}
+            question={questions[currentQuestion]}
             onAnswer={handleAnswer}
+            onQuit={() => setGameState('result')}
           />
         )}
+        {gameState === 'result' && (
+          <Result score={score} onRestart={handleRestart} />
+        )}
       </Container>
+      <Box sx={{ textAlign: 'center', color: 'black', mt: 4, mb: 2 }}>
+        <Typography variant="body2">
+          メタメタ大作戦2025 学力王診断
+        </Typography>
+        <Typography variant="body2">
+          ✍️20問出題（ランダム）
+        </Typography>
+        <Typography variant="body2">
+          ⌛制限時間：1問10秒
+        </Typography>
+        <Typography variant="body2">
+          ⚙️作成：ふつうのアサリガール 
+        </Typography>
+        <Typography variant="body2">
+          最終更新：{lastUpdated}
+        </Typography>
+      </Box>
     </ThemeProvider>
   );
 }

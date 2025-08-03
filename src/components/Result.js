@@ -4,37 +4,50 @@ import { Typography, Button, Container, Box } from '@mui/material';
 
 const Result = ({ score, onRestart }) => {
   const getRank = () => {
-    if (score >= 18) {
-      return 'メタメタ大作戦大好き芸人';
-    } else if (score >= 15) {
-      return 'アメトーーク！大好き芸人';
-    } else if (score >= 10) {
-      return 'テレビ朝日大好き芸人';
-    } else if (score >= 5) {
-      return 'テレビ大好き芸人';
+    if (score === 20) {
+      return { rank: '★★★★★', title: 'メタメタ大作戦2025 学力王認定！' };
+    } else if (score >= 16) {
+      return { rank: '★★★★☆', title: 'メタメタ大作戦2025 学力王挑戦者' };
+    } else if (score >= 11) {
+      return { rank: '★★★☆☆', title: 'メタメタ大作戦2025 案内人' };
+    } else if (score >= 6) {
+      return { rank: '★★☆☆☆', title: 'メタメタ大作戦2025 一般人' };
     } else {
-      return 'まだまだこれから芸人';
+      return { rank: '★☆☆☆☆', title: 'メタメタ大作戦2025 見学者' };
     }
   };
 
+  const handleShare = () => {
+    const text = `メタメタ大作戦2025 学力王診断
+20問中${score}問正解しました✨
+あなたも挑戦しよう`;
+    const url = "https://asarigirl.github.io/metasama";
+    const hashtags = "メタメタ大作戦2025学力王診断";
+    const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}&hashtags=${encodeURIComponent(hashtags)}`;
+    window.open(twitterUrl, '_blank');
+  };
+
+  const { rank, title } = getRank();
+
   return (
     <Container sx={{ textAlign: 'center' }}>
-      <Typography variant="h4" component="h1" gutterBottom>
-        診断結果
-      </Typography>
-      <Typography variant="h5" component="h2" gutterBottom>
-        あなたの「メタメタ大作戦大好き芸人度」は...
-      </Typography>
-      <Typography variant="h3" component="p" gutterBottom color="primary">
-        {getRank()}
-      </Typography>
       <Typography variant="h6" component="p" gutterBottom>
-        <Box component="span" sx={{ mr: 1 }}>💧</Box>
-        {score} / 20問正解
-        <Box component="span" sx={{ ml: 1 }}>💧</Box>
+        あなたの「メタメタ大作戦2025 学力王診断」結果は…
       </Typography>
-      <Button variant="contained" color="primary" onClick={onRestart} sx={{ mt: 2 }}>
+      <Typography variant="h2" component="p" gutterBottom color="primary">
+        {rank}
+      </Typography>
+      <Typography variant="h4" component="p" gutterBottom sx={{ mb: 2 }}>
+        {title}
+      </Typography>
+      <Typography variant="h5" component="p" gutterBottom>
+        {score} / 20問正解
+      </Typography>
+      <Button variant="contained" color="primary" onClick={onRestart} sx={{ mt: 2, mr: 1 }}>
         もう一度診断する
+      </Button>
+      <Button variant="contained" color="secondary" onClick={handleShare} sx={{ mt: 2, ml: 1 }}>
+        Xへ投稿
       </Button>
     </Container>
   );
